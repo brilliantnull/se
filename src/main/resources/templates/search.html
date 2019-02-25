@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+
+<link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+<html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .container-fluid{
+        margin-top: 15px !important;
+    }
+</style>
+
+<title th:text="${info}">title</title>
+<body>
+
+<div margin="36px auto 35px auto"
+    ></div>
+<div class="container-fluid">
+    <form action="search" name="search" method="get">
+        <table border="0" height="30px" width="450px" align="center">
+            <tr>
+                <!--<td><img src="mySElogo.jpg" /></td>-->
+                <td>KittenJump</td>
+
+
+                <!-- 10日完成 网页基本布局搭建，数据库连接，数据库存取-->
+                <!-- 11日早晨解决：thymeleaf 传值进入input标签内 已解决-->
+
+                <td width ="50%" >
+                    <input class="form-control" name="s" type="text" maxlength="100" id="textArea" th:value="${info}">
+                    <input name="p" type="hidden" value="1">
+                </td>
+                <td height="29" align="center">
+                    <button class="btn btn-info" type="submit" value="" id = "search">
+                        search
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <div th:if="${messageSize} eq 0">
+        <div>
+            <p>很抱歉，没有找到与【<em th:text="${info}">info</em>】相关的网页。</p>
+        </div>
+    </div>
+
+    <div th:if="${#lists.size(messages)} gt 0" th:each="message : ${messages}">
+        <div>
+            <h3>
+                <a href="#" th:text="${message.title}" th:href="${message.url}" target="_blank">title</a>
+            </h3>
+        </div>
+
+        <div>
+            <span th:text="${message.date}">date</span>
+            <p th:text="${message.text}">text</p>
+        </div>
+
+        <div><a href="#" th:text="${message.url}" th:href="${message.url}" target="_blank">url</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+        <!--页码-->
+        <ul class="pagination pagination-lg">
+        <nav>
+            <ul class="pagination pagination-lg">
+            <li><a th:if="${messageSize} gt 0" href="#" th:href="@{/search(s = ${info}, p = 1)}">首页</a></li>
+            <li th:if="${p - 1} ge 1"><a href="#" th:href="@{/search(s = ${info}, p = ${p} - 1)}">上一页</a></li>
+            <!--当总页数小于7-->
+            <div th:if="${(maxPage le 7) and (maxPage gt 0)}" th:remove="tag">
+                <div th:each="page : ${#numbers.sequence(1, maxPage)}" th:remove="tag">
+                    <span th:if="${page eq p}" th:remove="tag">
+                        <li class="active"><span class="current_page line_height" th:text="${page}">1</span></li>
+                    </span>
+                    <span th:unless="${page eq p}" th:remove="tag">
+                        <li><a href="#" th:href="@{${'/search'}(s = ${info}, p = ${page})}" th:text="${page}"></a></li>
+                    </span>
+                </div>
+            </div>
+            <!-- 总数数大于7时 -->
+            <div th:if="${maxPage gt 7}" th:remove="tag">
+                <li th:if="${p - 3} ge 1"><a href="#" th:href="@{/search(s = ${info}, p = ${p} - 3)}" th:text="${p - 3}">1</a></li>
+                <li th:if="${p - 2} ge 1"><a href="#" th:href="@{/search(s = ${info}, p = ${p} - 2)}" th:text="${p - 2}">1</a></li>
+                <li th:if="${p - 1} ge 1"><a href="#" th:href="@{/search(s = ${info}, p = ${p} - 1)}" th:text="${p - 1}">1</a></li>
+                <li class="active"><a href="#" th:text="${p}">1</a></li>
+                <li th:if="${p + 1} le ${maxPage}"><a href="#" th:href="@{/search(s = ${info}, p = ${p} + 1)}" th:text="${p  + 1}">1</a></li>
+                <li th:if="${p + 2} le ${maxPage}"><a href="#" th:href="@{/search(s = ${info}, p = ${p} + 2)}" th:text="${p  + 2}">1</a></li>
+                <li th:if="${p + 3} le ${maxPage}"><a href="#" th:href="@{/search(s = ${info}, p = ${p} + 3)}" th:text="${p  + 3}">1</a></li>
+            </div>
+
+            <li><a th:if="${(p + 1) le maxPage}"
+                   th:href="@{/search(s = ${info}, p = ${p} + 1)}">下一页</a></li>
+            <li><a th:if="${messageSize} gt 0" href="#" th:href="@{${'/search'}(s = ${info}, p = ${maxPage})}">尾页</a></li>
+        </ul><br>
+        </nav>
+        </ul>
+        </div>
+
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
+
